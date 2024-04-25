@@ -1,5 +1,7 @@
-import ReactFlow from "reactflow";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import "reactflow/dist/style.css";
+import MainActivity from "./components/MainActivity";
 
 function App() {
   return (
@@ -8,14 +10,10 @@ function App() {
         <div className="h-[56px] flex items-center justify-end px-[24px] bg-gray-200">
           <button>Save Changes</button>
         </div>
-        <div className="flex w-full flex-1">
-          <div className="w-full">
-            <ReactFlow />
-          </div>
-          <div className="w-[500px] border-2 border-gray-200">
-            <button>Message</button>
-          </div>
-        </div>
+
+        <DndProvider backend={HTML5Backend}>
+          <MainActivity />
+        </DndProvider>
       </div>
     </div>
   );
