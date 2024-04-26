@@ -3,6 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import ReactFlow, { addEdge, useEdgesState, useNodesState } from "reactflow";
 import { v4 } from "uuid";
 import CustomNode from "../CustomNode";
+import toast from "react-hot-toast";
 
 const nodeTypes = { textMessage: CustomNode };
 const MainActivity = () => {
@@ -62,6 +63,23 @@ const MainActivity = () => {
     return true;
   };
 
+  const isValidMessageFlow = () => {
+    for (let i = 0; i < nodes.length; i++) {
+      let currentNode = nodes[i];
+      let isConnected = edges.find(
+        (edge) =>
+          edge.source === currentNode.id || edge.target === currentNode.id
+      );
+
+      if (!isConnected) {
+        toast.error("Cannot save flow!");
+        return;
+      }
+    }
+
+    toast.success("Saved!");
+  };
+
   useEffect(() => {
     if (selectedNodeId)
       setNodes((nds) =>
@@ -78,51 +96,61 @@ const MainActivity = () => {
   }, [nodeText, selectedNodeId, setNodes]);
 
   return (
-    <div className="flex w-full flex-1">
-      <div ref={drop} className="w-full">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onInit={setReactFlowInstance}
-          onDrop={onMessageDropped}
-          onNodeClick={onNodeClick}
-          onPaneClick={resetSelectedNode}
-          onConnect={onConnect}
-          isValidConnection={isValidConnection}
-        />
+    <div className="flex flex-col w-full h-full">
+      <div className="h-[56px] flex items-center justify-end px-[24px] bg-gray-200">
+        <button
+          className="border-[1px] px-[12px] border-blue-400 text-blue-400 rounded-sm bg-white"
+          onClick={isValidMessageFlow}
+        >
+          Save Changes
+        </button>
       </div>
-      <div className="w-[500px] p-[16px] border-2 border-gray-200 flex justify-center items-start">
-        {selectedNodeId ? (
-          <div className="w-full">
-            <div className="mb-[24px]">
-              <button
-                className="border-[1px] px-[12px] border-black rounded-sm bg-white"
-                onClick={resetSelectedNode}
-              >
-                Back
-              </button>
+      <div className="flex w-full flex-1">
+        <div ref={drop} className="w-full">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onInit={setReactFlowInstance}
+            onDrop={onMessageDropped}
+            onNodeClick={onNodeClick}
+            onPaneClick={resetSelectedNode}
+            onConnect={onConnect}
+            isValidConnection={isValidConnection}
+          />
+        </div>
+        <div className="w-[500px] p-[16px] border-2 border-gray-200 flex justify-center items-start">
+          {selectedNodeId ? (
+            <div className="w-full">
+              <div className="mb-[24px]">
+                <button
+                  className="border-[1px] px-[12px] border-black rounded-sm bg-white"
+                  onClick={resetSelectedNode}
+                >
+                  Back
+                </button>
+              </div>
+              <div>
+                <textarea
+                  value={nodeText}
+                  onChange={(e) => setNodeText(e.target.value)}
+                  rows={5}
+                  className="w-full border-[1px] border-gray-400 p-[4px] rounded-sm"
+                  placeholder="Message"
+                />
+              </div>
             </div>
-            <div>
-              <textarea
-                value={nodeText}
-                onChange={(e) => setNodeText(e.target.value)}
-                rows={5}
-                className="w-full border-[1px] border-gray-400 p-[4px] rounded-sm"
-                placeholder="Message"
-              />
-            </div>
-          </div>
-        ) : (
-          <button
-            ref={drag}
-            className="border-[1px] p-[24px] border-blue-400 text-blue-400 rounded-sm"
-          >
-            Message
-          </button>
-        )}
+          ) : (
+            <button
+              ref={drag}
+              className="border-[1px] p-[24px] border-blue-400 text-blue-400 rounded-sm"
+            >
+              Message
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
