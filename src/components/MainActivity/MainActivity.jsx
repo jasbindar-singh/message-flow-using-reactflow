@@ -6,7 +6,9 @@ import ReactFlow, {
   useNodesState,
 } from "reactflow";
 import { v4 } from "uuid";
+import CustomNode from "../CustomNode";
 
+const nodeTypes = { textMessage: CustomNode };
 const MainActivity = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -21,9 +23,9 @@ const MainActivity = () => {
 
       const newNode = {
         id: v4(),
-        type: "default",
+        type: "textMessage",
         position,
-        data: { type: "text", value: "" },
+        data: { text: "" },
       };
 
       setNodes((nodes) => nodes.concat(newNode));
@@ -46,6 +48,7 @@ const MainActivity = () => {
           <ReactFlow
             nodes={nodes}
             edges={edges}
+            nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onInit={setReactFlowInstance}
@@ -53,8 +56,13 @@ const MainActivity = () => {
           />
         </ReactFlowProvider>
       </div>
-      <div className="w-[500px] border-2 border-gray-200">
-        <button ref={drag}>Message</button>
+      <div className="w-[500px] p-[16px] border-2 border-gray-200 flex justify-center items-start">
+        <button
+          ref={drag}
+          className="border-[1px] p-[24px] border-blue-400 text-blue-400 rounded-sm"
+        >
+          Message
+        </button>
       </div>
     </div>
   );
