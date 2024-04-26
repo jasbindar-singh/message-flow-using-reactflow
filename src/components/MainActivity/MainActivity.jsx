@@ -55,8 +55,10 @@ const MainActivity = () => {
   );
 
   const isValidConnection = (connection) => {
-    console.log(connection);
+    const source = connection.source;
+    const sourceEdgeExist = edges.find((edge) => edge.source === source);
 
+    if (sourceEdgeExist) return false;
     return true;
   };
 
