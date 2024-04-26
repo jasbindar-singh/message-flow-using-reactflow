@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import ReactFlow, { useEdgesState, useNodesState } from "reactflow";
+import ReactFlow, { addEdge, useEdgesState, useNodesState } from "reactflow";
 import { v4 } from "uuid";
 import CustomNode from "../CustomNode";
 
@@ -49,6 +49,17 @@ const MainActivity = () => {
     setNodeText("");
   };
 
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const isValidConnection = (connection) => {
+    console.log(connection);
+
+    return true;
+  };
+
   useEffect(() => {
     if (selectedNodeId)
       setNodes((nds) =>
@@ -77,6 +88,8 @@ const MainActivity = () => {
           onDrop={onMessageDropped}
           onNodeClick={onNodeClick}
           onPaneClick={resetSelectedNode}
+          onConnect={onConnect}
+          isValidConnection={isValidConnection}
         />
       </div>
       <div className="w-[500px] p-[16px] border-2 border-gray-200 flex justify-center items-start">
